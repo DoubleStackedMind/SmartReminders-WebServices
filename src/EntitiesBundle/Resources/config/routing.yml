@@ -1,0 +1,10 @@
+entities_user:
+    resource: "@EntitiesBundle/Resources/config/routing/user.yml"
+    prefix:   /user
+
+entities_dailyplan:
+    resource: "@EntitiesBundle/Resources/config/routing/dailyplan.yml"
+    prefix:   /dailyplan
+entities_homepage:
+    path:     /
+    defaults: { _controller: EntitiesBundle:Default:index }

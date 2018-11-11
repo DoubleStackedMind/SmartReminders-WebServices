@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Dailyplans list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Dayofweek</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for dailyPlan in dailyPlans %}
+            <tr>
+                <td><a href="{{ path('dailyplan_show', { 'id': dailyPlan.id }) }}">{{ dailyPlan.id }}</a></td>
+                <td>{{ dailyPlan.dayOfWeek }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('dailyplan_show', { 'id': dailyPlan.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('dailyplan_edit', { 'id': dailyPlan.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('dailyplan_new') }}">Create a new dailyPlan</a>
+        </li>
+    </ul>
+{% endblock %}
