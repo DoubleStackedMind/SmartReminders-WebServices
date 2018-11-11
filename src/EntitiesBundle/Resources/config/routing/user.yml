@@ -2,6 +2,10 @@ user_index:
     path:     /
     defaults: { _controller: "EntitiesBundle:User:index" }
     methods:  GET
+user_all:
+    path:     /all
+    defaults: { _controller: "EntitiesBundle:User:index" }
+    methods:  GET
 
 user_show:
     path:     /{id}/show

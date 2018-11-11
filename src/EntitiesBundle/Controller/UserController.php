@@ -5,6 +5,7 @@ namespace EntitiesBundle\Controller;
 use EntitiesBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * User controller.
@@ -16,15 +17,55 @@ class UserController extends Controller
      * Lists all user entities.
      *
      */
-    public function indexAction()
+    public function allAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $params=array();
+        $one=null;
+        if($request->query->has('id'))
+            $params["id"]=$request->get("id");
+        if($request->query->has('password'))
+            $params["password"]=$request->get("password");
+        if($request->query->has('email'))
+            $params["email"]=$request->get("email");
+        if(count($params)!=0) {
+            $em = $this->getDoctrine()->getManager();
+            $users = $em->getRepository('EntitiesBundle:User')->findBy($params);
+        }
+        $data = array();
+        if($users!=null) {
+            forEach($users as $one) {
+                $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword());
+            }
+        }
+        $response = new Response(json_encode($data));
 
-        $users = $em->getRepository('EntitiesBundle:User')->findAll();
+        $response->headers->set('Content-Type', 'application/json');
 
-        return $this->render('user/index.html.twig', array(
-            'users' => $users,
-        ));
+        return $response;
+    }
+    public function indexAction(Request $request)
+    {
+        $params=array();
+        $one=null;
+        if($request->query->has('id'))
+            $params["id"]=$request->get("id");
+        if($request->query->has('password'))
+            $params["password"]=$request->get("password");
+        if($request->query->has('email'))
+            $params["email"]=$request->get("email");
+        if(count($params)!=0) {
+            $em = $this->getDoctrine()->getManager();
+            $one = $em->getRepository('EntitiesBundle:User')->findOneBy($params);
+        }
+        $data = array();
+        if($one!=null) {
+            $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword());
+        }
+        $response = new Response(json_encode($data));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
