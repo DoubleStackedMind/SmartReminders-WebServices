@@ -4,7 +4,7 @@ namespace EntitiesBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DailyPlanControllerTest extends WebTestCase
+class TaskControllerTest extends WebTestCase
 {
     /*
     public function testCompleteScenario()
@@ -13,13 +13,13 @@ class DailyPlanControllerTest extends WebTestCase
         $client = static::createClient();
 
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/dailyplan/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /dailyplan/");
+        $crawler = $client->request('GET', '/task/');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /task/");
         $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'entitiesbundle_dailyplan[field_name]'  => 'Test',
+            'entitiesbundle_task[field_name]'  => 'Test',
             // ... other fields to fill
         ));
 
@@ -33,7 +33,7 @@ class DailyPlanControllerTest extends WebTestCase
         $crawler = $client->click($crawler->selectLink('Edit')->link());
 
         $form = $crawler->selectButton('Update')->form(array(
-            'entitiesbundle_dailyplan[field_name]'  => 'Foo',
+            'entitiesbundle_task[field_name]'  => 'Foo',
             // ... other fields to fill
         ));
 

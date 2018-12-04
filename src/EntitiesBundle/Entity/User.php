@@ -3,6 +3,8 @@
 namespace EntitiesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * User
@@ -36,14 +38,20 @@ class User
     private $password;
 
     /**
-     * @var DailyPlan
+     * @var string
      *
-     *
-     * @ORM\ManyToMany(targetEntity="EntitiesBundle\Entity\DailyPlan", inversedBy="users")
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $dailyPlans;
+    private $name;
 
-
+    /**
+     *
+     * @OneToMany(targetEntity="EntitiesBundle\Entity\Plan",mappedBy="user")
+     * @JoinColumn(name="UserPlans", referencedColumnName="id")
+     *
+     *
+     */
+    private $plans;
     /**
      * Get id
      *
@@ -103,20 +111,26 @@ class User
     }
 
     /**
-     * @return DailyPlan
+     * @return string
      */
-    public function getDailyPlans()
+    public function getName()
     {
-        return $this->dailyPlans;
+        return $this->name;
     }
 
     /**
-     * @param DailyPlan $dailyPlans
+     * @param string $name
      */
-    public function setDailyPlans($dailyPlans)
+    public function setName($name)
     {
-        $this->dailyPlans = $dailyPlans;
+        $this->name = $name;
     }
+
+    public function __toString()
+    {
+        return $this->id."";
+    }
+
 
 }
 
