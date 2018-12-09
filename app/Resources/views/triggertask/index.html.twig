@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Tasks list</h1>
+    <h1>Triggertasks list</h1>
 
     <table>
         <thead>
             <tr>
-                <th>Executiontime</th>
                 <th>Id</th>
                 <th>Title</th>
                 <th>Description</th>
@@ -16,21 +15,20 @@
             </tr>
         </thead>
         <tbody>
-        {% for task in tasks %}
+        {% for triggerTask in triggerTasks %}
             <tr>
-                <td><a href="{{ path('task_show', { 'id': task.id }) }}">{{ task.executionTime }}</a></td>
-                <td>{{ task.id }}</td>
-                <td>{{ task.title }}</td>
-                <td>{{ task.description }}</td>
-                <td>{{ task.state }}</td>
-                <td>{{ task.dayofweek }}</td>
+                <td><a href="{{ path('triggertask_show', { 'id': triggerTask.id }) }}">{{ triggerTask.id }}</a></td>
+                <td>{{ triggerTask.title }}</td>
+                <td>{{ triggerTask.description }}</td>
+                <td>{{ triggerTask.state }}</td>
+                <td>{{ triggerTask.dayofweek }}</td>
                 <td>
                     <ul>
                         <li>
-                            <a href="{{ path('task_show', { 'id': task.id }) }}">show</a>
+                            <a href="{{ path('triggertask_show', { 'id': triggerTask.id }) }}">show</a>
                         </li>
                         <li>
-                            <a href="{{ path('task_edit', { 'id': task.id }) }}">edit</a>
+                            <a href="{{ path('triggertask_edit', { 'id': triggerTask.id }) }}">edit</a>
                         </li>
                     </ul>
                 </td>
@@ -41,7 +39,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('task_new') }}">Create a new task</a>
+            <a href="{{ path('triggertask_new') }}">Create a new triggerTask</a>
         </li>
     </ul>
 {% endblock %}

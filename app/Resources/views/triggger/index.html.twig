@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Trigggers list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Icon</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for triggger in trigggers %}
+            <tr>
+                <td><a href="{{ path('triggger_show', { 'id': triggger.id }) }}">{{ triggger.id }}</a></td>
+                <td>{{ triggger.name }}</td>
+                <td>{{ triggger.icon }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('triggger_show', { 'id': triggger.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('triggger_edit', { 'id': triggger.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('triggger_new') }}">Create a new triggger</a>
+        </li>
+    </ul>
+{% endblock %}

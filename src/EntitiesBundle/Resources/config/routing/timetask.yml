@@ -1,0 +1,24 @@
+timetask_index:
+    path:     /
+    defaults: { _controller: "EntitiesBundle:TimeTask:index" }
+    methods:  GET
+
+timetask_show:
+    path:     /{id}/show
+    defaults: { _controller: "EntitiesBundle:TimeTask:show" }
+    methods:  GET
+
+timetask_new:
+    path:     /new
+    defaults: { _controller: "EntitiesBundle:TimeTask:new" }
+    methods:  [GET, POST]
+
+timetask_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "EntitiesBundle:TimeTask:edit" }
+    methods:  [GET, POST]
+
+timetask_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "EntitiesBundle:TimeTask:delete" }
+    methods:  DELETE

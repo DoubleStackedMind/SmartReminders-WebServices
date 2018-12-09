@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Timetasks list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Executiontime</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>State</th>
+                <th>Dayofweek</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for timeTask in timeTasks %}
+            <tr>
+                <td><a href="{{ path('timetask_show', { 'id': timeTask.id }) }}">{{ timeTask.executionTime }}</a></td>
+                <td>{{ timeTask.id }}</td>
+                <td>{{ timeTask.title }}</td>
+                <td>{{ timeTask.description }}</td>
+                <td>{{ timeTask.state }}</td>
+                <td>{{ timeTask.dayofweek }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('timetask_show', { 'id': timeTask.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('timetask_edit', { 'id': timeTask.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('timetask_new') }}">Create a new timeTask</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -3,6 +3,9 @@
 namespace EntitiesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * Task
@@ -12,32 +15,34 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task extends Plan
 {
-
     /**
-     * @var integer
      *
-     * @ORM\Column(name="executionTime", type="integer")
+     * @ManyToMany(targetEntity="EntitiesBundle\Entity\Action",mappedBy="task")
+     * @JoinColumn(name="TaskActions", referencedColumnName="id")
+     *
+     *
      */
-    private $executionTime;
+    protected $actions;
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getExecutionTime()
+    public function getActions()
     {
-        return $this->executionTime;
+        return $this->actions;
     }
 
     /**
-     * @param int $executionTime
+     * @param mixed $actions
      */
-    public function setExecutionTime($executionTime)
+    public function setActions($actions)
     {
-        $this->executionTime = $executionTime;
+        $this->actions = $actions;
     }
-
-
-
+    public function __toString()
+    {
+        return $this->id."";
+    }
 
 }
 

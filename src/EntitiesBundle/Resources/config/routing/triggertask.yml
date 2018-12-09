@@ -1,0 +1,24 @@
+triggertask_index:
+    path:     /
+    defaults: { _controller: "EntitiesBundle:TriggerTask:index" }
+    methods:  GET
+
+triggertask_show:
+    path:     /{id}/show
+    defaults: { _controller: "EntitiesBundle:TriggerTask:show" }
+    methods:  GET
+
+triggertask_new:
+    path:     /new
+    defaults: { _controller: "EntitiesBundle:TriggerTask:new" }
+    methods:  [GET, POST]
+
+triggertask_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "EntitiesBundle:TriggerTask:edit" }
+    methods:  [GET, POST]
+
+triggertask_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "EntitiesBundle:TriggerTask:delete" }
+    methods:  DELETE

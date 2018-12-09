@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping\OneToMany;
  * @Entity
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"plan" = "Plan", "task" = "Task", "event" = "Event"})
+ * @DiscriminatorMap({"plan" = "Plan", "timetask" = "TimeTask", "event" = "Event", "task" = "Task" ,"triggertask"="TriggerTask"})
  *
  */
 
@@ -157,6 +157,11 @@ class Plan
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    public function __toString()
+    {
+        return $this->id."";
     }
 
 }

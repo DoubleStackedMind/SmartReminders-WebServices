@@ -1,16 +1,24 @@
 entities_user:
     resource: "@EntitiesBundle/Resources/config/routing/user.yml"
     prefix:   /user
-
 entities_plan:
     resource: "@EntitiesBundle/Resources/config/routing/plan.yml"
     prefix:   /plan
 entities_event:
     resource: "@EntitiesBundle/Resources/config/routing/event.yml"
     prefix:   /event
-entities_task:
-    resource: "@EntitiesBundle/Resources/config/routing/task.yml"
-    prefix:   /task
+entities_timetask:
+    resource: "@EntitiesBundle/Resources/config/routing/timetask.yml"
+    prefix:   /timetask
+entities_action:
+    resource: "@EntitiesBundle/Resources/config/routing/action.yml"
+    prefix:   /action
+entities_triggger:
+    resource: "@EntitiesBundle/Resources/config/routing/triggger.yml"
+    prefix:   /triggger
+entities_triggertask:
+    resource: "@EntitiesBundle/Resources/config/routing/triggertask.yml"
+    prefix:   /triggertask
 entities_homepage:
     path:     /
     defaults: { _controller: EntitiesBundle:Default:index }

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Timetask</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Executiontime</th>
+                <td>{{ timeTask.executionTime }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ timeTask.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ timeTask.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ timeTask.description }}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ timeTask.state }}</td>
+            </tr>
+            <tr>
+                <th>Dayofweek</th>
+                <td>{{ timeTask.dayofweek }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('timetask_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('timetask_edit', { 'id': timeTask.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

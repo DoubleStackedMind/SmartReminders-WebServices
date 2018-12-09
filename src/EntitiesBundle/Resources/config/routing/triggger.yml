@@ -1,0 +1,24 @@
+triggger_index:
+    path:     /
+    defaults: { _controller: "EntitiesBundle:Triggger:index" }
+    methods:  GET
+
+triggger_show:
+    path:     /{id}/show
+    defaults: { _controller: "EntitiesBundle:Triggger:show" }
+    methods:  GET
+
+triggger_new:
+    path:     /new
+    defaults: { _controller: "EntitiesBundle:Triggger:new" }
+    methods:  [GET, POST]
+
+triggger_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "EntitiesBundle:Triggger:edit" }
+    methods:  [GET, POST]
+
+triggger_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "EntitiesBundle:Triggger:delete" }
+    methods:  DELETE

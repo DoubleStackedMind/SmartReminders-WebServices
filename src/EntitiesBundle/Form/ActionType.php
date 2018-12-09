@@ -6,14 +6,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TaskType extends AbstractType
+class ActionType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('executionTime')->add('title')->add('description')->add('state')->add('dayofweek')->add('user');
+        $builder->add('name')->add('icon')->add('task');
     }
     
     /**
@@ -22,7 +22,7 @@ class TaskType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'EntitiesBundle\Entity\Task'
+            'data_class' => 'EntitiesBundle\Entity\Action'
         ));
     }
 
@@ -31,7 +31,7 @@ class TaskType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'entitiesbundle_task';
+        return 'entitiesbundle_action';
     }
 
 

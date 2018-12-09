@@ -1,43 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Task</h1>
+    <h1>Triggertask</h1>
 
     <table>
         <tbody>
             <tr>
-                <th>Executiontime</th>
-                <td>{{ task.executionTime }}</td>
-            </tr>
-            <tr>
                 <th>Id</th>
-                <td>{{ task.id }}</td>
+                <td>{{ triggerTask.id }}</td>
             </tr>
             <tr>
                 <th>Title</th>
-                <td>{{ task.title }}</td>
+                <td>{{ triggerTask.title }}</td>
             </tr>
             <tr>
                 <th>Description</th>
-                <td>{{ task.description }}</td>
+                <td>{{ triggerTask.description }}</td>
             </tr>
             <tr>
                 <th>State</th>
-                <td>{{ task.state }}</td>
+                <td>{{ triggerTask.state }}</td>
             </tr>
             <tr>
                 <th>Dayofweek</th>
-                <td>{{ task.dayofweek }}</td>
+                <td>{{ triggerTask.dayofweek }}</td>
             </tr>
         </tbody>
     </table>
 
     <ul>
         <li>
-            <a href="{{ path('task_index') }}">Back to the list</a>
+            <a href="{{ path('triggertask_index') }}">Back to the list</a>
         </li>
         <li>
-            <a href="{{ path('task_edit', { 'id': task.id }) }}">Edit</a>
+            <a href="{{ path('triggertask_edit', { 'id': triggerTask.id }) }}">Edit</a>
         </li>
         <li>
             {{ form_start(delete_form) }}
