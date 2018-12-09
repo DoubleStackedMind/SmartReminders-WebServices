@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dailyplan creation</h1>
+    <h1>Plan creation</h1>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
@@ -10,7 +10,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('dailyplan_index') }}">Back to the list</a>
+            <a href="{{ path('plan_index') }}">Back to the list</a>
         </li>
     </ul>
 {% endblock %}

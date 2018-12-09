@@ -18,7 +18,7 @@ user_new:
     methods:  [GET, POST]
 
 user_edit:
-    path:     /{id}/edit
+    path:     /edit
     defaults: { _controller: "EntitiesBundle:User:edit" }
     methods:  [GET, POST]
 

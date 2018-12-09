@@ -14,8 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     /**
-     * Lists all user entities.
-     *
+     * Lists all user entities as JSONArray.
+     * @param Request $request
+     * @return Response
      */
     public function allAction(Request $request)
     {
@@ -27,6 +28,8 @@ class UserController extends Controller
             $params["password"]=$request->get("password");
         if($request->query->has('email'))
             $params["email"]=$request->get("email");
+        if($request->query->has('name'))
+            $params["name"]=$request->get("name");
         if(count($params)!=0) {
             $em = $this->getDoctrine()->getManager();
             $users = $em->getRepository('EntitiesBundle:User')->findBy($params);
@@ -34,7 +37,7 @@ class UserController extends Controller
         $data = array();
         if($users!=null) {
             forEach($users as $one) {
-                $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword());
+                $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword(),"name"=>$one->getName());
             }
         }
         $response = new Response(json_encode($data));
@@ -43,7 +46,11 @@ class UserController extends Controller
 
         return $response;
     }
-
+    /**
+     * Lists one user entities as JSONObject.
+     * @param Request $request
+     * @return Response
+     */
     public function indexAction(Request $request)
     {
         $params=array();
@@ -54,13 +61,15 @@ class UserController extends Controller
             $params["password"]=$request->get("password");
         if($request->query->has('email'))
             $params["email"]=$request->get("email");
+        if($request->query->has('name'))
+            $params["name"]=$request->get("name");
         if(count($params)!=0) {
             $em = $this->getDoctrine()->getManager();
             $one = $em->getRepository('EntitiesBundle:User')->findOneBy($params);
         }
         $data = array();
         if($one!=null) {
-            $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword());
+            $data[] = array("id" => $one->getId(), "email" => $one->getEmail(), "password" => $one->getPassword(),"name"=>$one->getName());
         }
         $response = new Response(json_encode($data));
 
@@ -75,22 +84,24 @@ class UserController extends Controller
      */
     public function newAction(Request $request)
     {
-        $user = new User();
-        $form = $this->createForm('EntitiesBundle\Form\UserType', $user);
-        $form->handleRequest($request);
+        $data=array("result"=>"missing params");
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($request->get("password")!=null&&$request->get("email")!=null&&$request->get("name")!=null)
+        { $user = new User();
+        $user->setEmail($request->get("email"));
+        $user->setPassword($request->get("password"));
+        $user->setName($request->get("name"));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
 
-            return $this->redirectToRoute('user_show', array('id' => $user->getId()));
-        }
 
-        return $this->render('user/new.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView(),
-        ));
+           $data=array("result"=>"ok");
+        }
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+
     }
 
     /**
@@ -111,23 +122,24 @@ class UserController extends Controller
      * Displays a form to edit an existing user entity.
      *
      */
-    public function editAction(Request $request, User $user)
+    public function editAction(Request $request)
     {
-        $deleteForm = $this->createDeleteForm($user);
-        $editForm = $this->createForm('EntitiesBundle\Form\UserType', $user);
-        $editForm->handleRequest($request);
+        $data=array("result"=>"missing params");
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('user_edit', array('id' => $user->getId()));
+        if($request->get("id")!=null&&$request->get("email")!=null&&$request->get("name")!=null&&$request->get("password"))
+        {   $em = $this->getDoctrine()->getManager();
+            $user =$em->find(User::class,$request->get("id"));
+            $user->setEmail($request->get("email"));
+            $user->setPassword($request->get("password"));
+            $user->setName($request->get("name"));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $data=array("result"=>"ok");
         }
-
-        return $this->render('user/edit.html.twig', array(
-            'user' => $user,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -160,7 +172,6 @@ class UserController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('user_delete', array('id' => $user->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

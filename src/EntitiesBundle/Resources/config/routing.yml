@@ -2,9 +2,15 @@ entities_user:
     resource: "@EntitiesBundle/Resources/config/routing/user.yml"
     prefix:   /user
 
-entities_dailyplan:
-    resource: "@EntitiesBundle/Resources/config/routing/dailyplan.yml"
-    prefix:   /dailyplan
+entities_plan:
+    resource: "@EntitiesBundle/Resources/config/routing/plan.yml"
+    prefix:   /plan
+entities_event:
+    resource: "@EntitiesBundle/Resources/config/routing/event.yml"
+    prefix:   /event
+entities_task:
+    resource: "@EntitiesBundle/Resources/config/routing/task.yml"
+    prefix:   /task
 entities_homepage:
     path:     /
     defaults: { _controller: EntitiesBundle:Default:index }
