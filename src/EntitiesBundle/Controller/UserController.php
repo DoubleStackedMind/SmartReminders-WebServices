@@ -43,6 +43,7 @@ class UserController extends Controller
 
         return $response;
     }
+
     public function indexAction(Request $request)
     {
         $params=array();
