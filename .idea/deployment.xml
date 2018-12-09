@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="ahmedaminebenmimoun" showNewOnSourceInSync="false" showNewOnTargetInSync="false" showExcludedInSync="true">
+    <serverData>
+      <paths name="ahmedaminebenmimoun">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/public_html/WebServices/" local="$PROJECT_DIR$" web="https://ahmedaminebenmimoun.000webhostapp.com/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>
