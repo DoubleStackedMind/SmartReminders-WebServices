@@ -109,5 +109,23 @@ class Action
     {
         return $this->id."";
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param mixed $task
+     */
+    public function setTask($task)
+    {
+        $this->task = $task;
+    }
+
+
 }
 

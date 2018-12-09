@@ -4,7 +4,9 @@ namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\TriggerTask;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Triggertask controller.
@@ -16,15 +18,26 @@ class TriggerTaskController extends Controller
      * Lists all triggerTask entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $params=array();
+        $one=null;
+        if($request->query->has('triggers'))
+            $params["triggers"]=$request->get("triggers");
 
-        $triggerTasks = $em->getRepository('EntitiesBundle:TriggerTask')->findAll();
+        if(count($params)!=0) {
+            $em = $this->getDoctrine()->getManager();
+            $one = $em->getRepository('EntitiesBundle:TriggerTask')->findOneBy($params);
+        }
+        $data = array();
+        if($one!=null) {
+            $data[] = array("trigger" => $one->getTriggers());
+        }
+        $response = new Response(json_encode($data));
 
-        return $this->render('triggertask/index.html.twig', array(
-            'triggerTasks' => $triggerTasks,
-        ));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
@@ -33,6 +46,7 @@ class TriggerTaskController extends Controller
      */
     public function newAction(Request $request)
     {
+        $data=array("result"=>"missing params");
         $triggerTask = new Triggertask();
         $form = $this->createForm('EntitiesBundle\Form\TriggerTaskType', $triggerTask);
         $form->handleRequest($request);
@@ -42,13 +56,13 @@ class TriggerTaskController extends Controller
             $em->persist($triggerTask);
             $em->flush();
 
-            return $this->redirectToRoute('triggertask_show', array('id' => $triggerTask->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('triggertask/new.html.twig', array(
-            'triggerTask' => $triggerTask,
-            'form' => $form->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+
     }
 
     /**
@@ -71,21 +85,21 @@ class TriggerTaskController extends Controller
      */
     public function editAction(Request $request, TriggerTask $triggerTask)
     {
-        $deleteForm = $this->createDeleteForm($triggerTask);
+        $data=array("result"=>"missing params");
+
         $editForm = $this->createForm('EntitiesBundle\Form\TriggerTaskType', $triggerTask);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('triggertask_edit', array('id' => $triggerTask->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('triggertask/edit.html.twig', array(
-            'triggerTask' => $triggerTask,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+
     }
 
     /**
@@ -103,7 +117,7 @@ class TriggerTaskController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('triggertask_index');
+        return new JsonResponse("ok");
     }
 
     /**
