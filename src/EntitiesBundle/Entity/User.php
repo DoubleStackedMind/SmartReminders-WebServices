@@ -53,6 +53,14 @@ class User
      */
     private $plans;
     /**
+     *
+     * @OneToMany(targetEntity="EntitiesBundle\Entity\Zone",mappedBy="user")
+     * @JoinColumn(name="UserZones", referencedColumnName="id")
+     *
+     *
+     */
+    private $zones;
+    /**
      * Get id
      *
      * @return int
@@ -129,6 +137,38 @@ class User
     public function __toString()
     {
         return $this->id."";
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlans()
+    {
+        return $this->plans;
+    }
+
+    /**
+     * @param mixed $plans
+     */
+    public function setPlans($plans)
+    {
+        $this->plans = $plans;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getZones()
+    {
+        return $this->zones;
+    }
+
+    /**
+     * @param mixed $zones
+     */
+    public function setZones($zones)
+    {
+        $this->zones = $zones;
     }
 
 

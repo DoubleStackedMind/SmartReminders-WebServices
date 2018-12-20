@@ -19,6 +19,9 @@ entities_triggger:
 entities_triggertask:
     resource: "@EntitiesBundle/Resources/config/routing/triggertask.yml"
     prefix:   /triggertask
+entities_zone:
+    resource: "@EntitiesBundle/Resources/config/routing/zone.yml"
+    prefix:   /zone
 entities_homepage:
     path:     /
     defaults: { _controller: EntitiesBundle:Default:index }
