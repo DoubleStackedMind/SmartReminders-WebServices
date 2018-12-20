@@ -1,0 +1,29 @@
+zone_index:
+    path:     /
+    defaults: { _controller: "EntitiesBundle:Zone:index" }
+    methods:  GET
+
+zone_all:
+    path:     /all
+    defaults: { _controller: "EntitiesBundle:Zone:all" }
+    methods:  GET
+
+zone_show:
+    path:     /{id}/show
+    defaults: { _controller: "EntitiesBundle:Zone:show" }
+    methods:  GET
+
+zone_new:
+    path:     /new
+    defaults: { _controller: "EntitiesBundle:Zone:new" }
+    methods:  [GET, POST]
+
+zone_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "EntitiesBundle:Zone:edit" }
+    methods:  [GET, POST]
+
+zone_delete:
+    path:     /delete
+    defaults: { _controller: "EntitiesBundle:Zone:delete" }
+    methods:  [POST]
