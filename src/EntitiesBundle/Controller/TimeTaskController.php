@@ -4,7 +4,9 @@ namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\TimeTask;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Timetask controller.
@@ -16,15 +18,27 @@ class TimeTaskController extends Controller
      * Lists all timeTask entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $params=array();
+        $one=null;
+        if($request->query->has('executionTime'))
+            $params["executionTime"]=$request->get("executionTime");
+        if(count($params)!=0) {
+            $em = $this->getDoctrine()->getManager();
+            $users = $em->getRepository('EntitiesBundle:TimeTask')->findBy($params);
+        }
+        $data = array();
+        if($users!=null) {
+            forEach($users as $one) {
+                $data[] = array("executionTime" => $one->getExecutionTime());
+            }
+        }
+        $response = new Response(json_encode($data));
 
-        $timeTasks = $em->getRepository('EntitiesBundle:TimeTask')->findAll();
+        $response->headers->set('Content-Type', 'application/json');
 
-        return $this->render('timetask/index.html.twig', array(
-            'timeTasks' => $timeTasks,
-        ));
+        return $response;
     }
 
     /**
@@ -33,6 +47,8 @@ class TimeTaskController extends Controller
      */
     public function newAction(Request $request)
     {
+        $data=array("result"=>"missing params");
+
         $timeTask = new Timetask();
         $form = $this->createForm('EntitiesBundle\Form\TimeTaskType', $timeTask);
         $form->handleRequest($request);
@@ -42,13 +58,13 @@ class TimeTaskController extends Controller
             $em->persist($timeTask);
             $em->flush();
 
-            return $this->redirectToRoute('timetask_show', array('id' => $timeTask->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('timetask/new.html.twig', array(
-            'timeTask' => $timeTask,
-            'form' => $form->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+
     }
 
     /**
@@ -71,6 +87,8 @@ class TimeTaskController extends Controller
      */
     public function editAction(Request $request, TimeTask $timeTask)
     {
+        $data=array("result"=>"missing params");
+
         $deleteForm = $this->createDeleteForm($timeTask);
         $editForm = $this->createForm('EntitiesBundle\Form\TimeTaskType', $timeTask);
         $editForm->handleRequest($request);
@@ -78,14 +96,12 @@ class TimeTaskController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('timetask_edit', array('id' => $timeTask->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('timetask/edit.html.twig', array(
-            'timeTask' => $timeTask,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -103,7 +119,7 @@ class TimeTaskController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('timetask_index');
+        return new JsonResponse("ok");
     }
 
     /**

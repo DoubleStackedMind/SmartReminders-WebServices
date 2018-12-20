@@ -4,7 +4,9 @@ namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\Action;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Action controller.
@@ -16,15 +18,32 @@ class ActionController extends Controller
      * Lists all action entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $params=array();
+        $one=null;
+        if($request->query->has('id'))
+            $params["id"]=$request->get("id");
+        if($request->query->has('name'))
+            $params["name"]=$request->get("name");
+        if($request->query->has('icon'))
+            $params["icon"]=$request->get("icon");
+        if($request->query->has('task'))
+            $params["task"]=$request->get("task");
+        if(count($params)!=0) {
+            $em = $this->getDoctrine()->getManager();
+            $one = $em->getRepository('EntitiesBundle:Action')->findOneBy($params);
+        }
+        $data = array();
+        if($one!=null) {
+            $data[] = array("id" => $one->getId(), "name" => $one->getName(), "icon" => $one->getIcon(),"task"=>$one->getTask());
+        }
+        $response = new Response(json_encode($data));
 
-        $actions = $em->getRepository('EntitiesBundle:Action')->findAll();
+        $response->headers->set('Content-Type', 'application/json');
 
-        return $this->render('action/index.html.twig', array(
-            'actions' => $actions,
-        ));
+        return $response;
+
     }
 
     /**
@@ -33,6 +52,7 @@ class ActionController extends Controller
      */
     public function newAction(Request $request)
     {
+        $data=array("result"=>"missing params");
         $action = new Action();
         $form = $this->createForm('EntitiesBundle\Form\ActionType', $action);
         $form->handleRequest($request);
@@ -42,13 +62,11 @@ class ActionController extends Controller
             $em->persist($action);
             $em->flush();
 
-            return $this->redirectToRoute('action_show', array('id' => $action->getId()));
+            $data=array("result"=>"ok");
         }
-
-        return $this->render('action/new.html.twig', array(
-            'action' => $action,
-            'form' => $form->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -71,6 +89,7 @@ class ActionController extends Controller
      */
     public function editAction(Request $request, Action $action)
     {
+        $data=array("result"=>"missing params");
         $deleteForm = $this->createDeleteForm($action);
         $editForm = $this->createForm('EntitiesBundle\Form\ActionType', $action);
         $editForm->handleRequest($request);
@@ -78,14 +97,12 @@ class ActionController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('action_edit', array('id' => $action->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('action/edit.html.twig', array(
-            'action' => $action,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -103,7 +120,7 @@ class ActionController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('action_index');
+        return new JsonResponse("ok");
     }
 
     /**

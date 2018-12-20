@@ -4,7 +4,9 @@ namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\Triggger;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Triggger controller.
@@ -16,15 +18,29 @@ class TrigggerController extends Controller
      * Lists all triggger entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        $params=array();
+        $one=null;
+        if($request->query->has('id'))
+            $params["id"]=$request->get("id");
+        if($request->query->has('name'))
+            $params["name"]=$request->get("name");
+        if($request->query->has('icon'))
+            $params["icon"]=$request->get("icon");
+        if($request->query->has('task'))
+            $params["task"]=$request->get("task");
+        if(count($params)!=0) {
         $em = $this->getDoctrine()->getManager();
-
-        $trigggers = $em->getRepository('EntitiesBundle:Triggger')->findAll();
-
-        return $this->render('triggger/index.html.twig', array(
-            'trigggers' => $trigggers,
-        ));
+            $one = $em->getRepository('EntitiesBundle:Triggger')->findOneBy($params);
+        }
+        $data = array();
+        if($one!=null) {
+            $data[] = array("id" => $one->getId(), "name" => $one->getName(), "icon" => $one->getIcon(),"task"=>$one->getTask());
+        }
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -33,6 +49,7 @@ class TrigggerController extends Controller
      */
     public function newAction(Request $request)
     {
+        $data=array("result"=>"missing params");
         $triggger = new Triggger();
         $form = $this->createForm('EntitiesBundle\Form\TrigggerType', $triggger);
         $form->handleRequest($request);
@@ -42,14 +59,13 @@ class TrigggerController extends Controller
             $em->persist($triggger);
             $em->flush();
 
-            return $this->redirectToRoute('triggger_show', array('id' => $triggger->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('triggger/new.html.twig', array(
-            'triggger' => $triggger,
-            'form' => $form->createView(),
-        ));
-    }
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+        }
 
     /**
      * Finds and displays a triggger entity.
@@ -71,6 +87,8 @@ class TrigggerController extends Controller
      */
     public function editAction(Request $request, Triggger $triggger)
     {
+        $data=array("result"=>"missing params");
+
         $deleteForm = $this->createDeleteForm($triggger);
         $editForm = $this->createForm('EntitiesBundle\Form\TrigggerType', $triggger);
         $editForm->handleRequest($request);
@@ -78,14 +96,11 @@ class TrigggerController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('triggger_edit', array('id' => $triggger->getId()));
+            $data=array("result"=>"ok");
         }
-
-        return $this->render('triggger/edit.html.twig', array(
-            'triggger' => $triggger,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -103,7 +118,7 @@ class TrigggerController extends Controller
             $em->flush();
         }
 
-        return $this->redirectToRoute('triggger_index');
+        return new JsonResponse("ok");
     }
 
     /**
