@@ -16,16 +16,14 @@ use Doctrine\ORM\Mapping\OneToMany;
 class Task extends Plan
 {
     /**
+     * @var string
      *
-     * @ManyToMany(targetEntity="EntitiesBundle\Entity\Action",mappedBy="task")
-     * @JoinColumn(name="TaskActions", referencedColumnName="id")
-     *
-     *
+     * @ORM\Column(name="actions", type="string", length=255, unique=false)
      */
     protected $actions;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getActions()
     {
@@ -33,7 +31,7 @@ class Task extends Plan
     }
 
     /**
-     * @param mixed $actions
+     * @param  string
      */
     public function setActions($actions)
     {

@@ -27,6 +27,13 @@ class Event extends Plan
     private $endTime;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="reminderETA", type="integer")
+     */
+    private $ReminderETA;
+
+    /**
      * @return int
      */
     public function getStartTime()
@@ -57,6 +64,23 @@ class Event extends Plan
     {
         $this->endTime = $endTime;
     }
+
+    /**
+     * @return int
+     */
+    public function getReminderETA()
+    {
+        return $this->ReminderETA;
+    }
+
+    /**
+     * @param int $ReminderETA
+     */
+    public function setReminderETA($ReminderETA)
+    {
+        $this->ReminderETA = $ReminderETA;
+    }
+
 
 }
 

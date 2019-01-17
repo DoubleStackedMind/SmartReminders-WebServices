@@ -16,16 +16,14 @@ use Doctrine\ORM\Mapping\OneToMany;
 class TriggerTask extends Task
 {
     /**
+     * @var string
      *
-     * @ManyToMany(targetEntity="EntitiesBundle\Entity\Triggger",mappedBy="trigger")
-     * @JoinColumn(name="TaskTriggers", referencedColumnName="id")
-     *
-     *
+     * @ORM\Column(name="triggers", type="string", length=255, unique=false)
      */
     protected $triggers;
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTriggers()
     {
@@ -33,7 +31,7 @@ class TriggerTask extends Task
     }
 
     /**
-     * @param mixed $triggers
+     * @param string
      */
     public function setTriggers($triggers)
     {

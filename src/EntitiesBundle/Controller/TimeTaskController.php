@@ -2,9 +2,10 @@
 
 namespace EntitiesBundle\Controller;
 
+use EntitiesBundle\Entity\Action;
 use EntitiesBundle\Entity\TimeTask;
+use EntitiesBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,24 +15,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TimeTaskController extends Controller
 {
-    /**
-     * Lists all timeTask entities.
-     *
-     */
+
+
     public function indexAction(Request $request)
     {
-        $params=array();
-        $one=null;
-        if($request->query->has('executionTime'))
-            $params["executionTime"]=$request->get("executionTime");
-        if(count($params)!=0) {
-            $em = $this->getDoctrine()->getManager();
-            $users = $em->getRepository('EntitiesBundle:TimeTask')->findBy($params);
-        }
-        $data = array();
-        if($users!=null) {
-            forEach($users as $one) {
-                $data[] = array("executionTime" => $one->getExecutionTime());
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->find(User::class,$request->get("user"));
+        $timetasks = $em->getRepository('EntitiesBundle:TimeTask')->findAll(array("user"=>$user));
+        if($timetasks!=null) {
+            forEach ($timetasks as $one) {
+                $data[] = array("state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "executionTime" => $one->getExecutionTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"actions"=>$one->getActions());
             }
         }
         $response = new Response(json_encode($data));
@@ -47,24 +40,26 @@ class TimeTaskController extends Controller
      */
     public function newAction(Request $request)
     {
-        $data=array("result"=>"missing params");
+        $data = array("result" => "missing params");
 
-        $timeTask = new Timetask();
-        $form = $this->createForm('EntitiesBundle\Form\TimeTaskType', $timeTask);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->get("executionTime") != null && $request->get("description") != null && $request->get("state") != null && $request->get("days") != null && $request->get("user") != null && $request->get("title") != null && $request->get("actions") != null) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($timeTask);
+            $timetask = new TimeTask();
+            $timetask->setDayofweek($request->get("days"));
+            $timetask->setExecutionTime($request->get("executionTime"));
+            $timetask->setState($request->get("state"));
+            $timetask->setUser($em->find(User::class, $request->get("user")));
+            $timetask->setDescription($request->get("description"));
+            $timetask->setTitle($request->get("title"));
+            $timetask->setActions($request->get("actions"));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($timetask);
             $em->flush();
-
-            $data=array("result"=>"ok");
+            $data = array("result" => "ok");
         }
-
         $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
-
     }
 
     /**
@@ -87,8 +82,6 @@ class TimeTaskController extends Controller
      */
     public function editAction(Request $request, TimeTask $timeTask)
     {
-        $data=array("result"=>"missing params");
-
         $deleteForm = $this->createDeleteForm($timeTask);
         $editForm = $this->createForm('EntitiesBundle\Form\TimeTaskType', $timeTask);
         $editForm->handleRequest($request);
@@ -96,30 +89,33 @@ class TimeTaskController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            $data=array("result"=>"ok");
+            return $this->redirectToRoute('timetask_edit', array('id' => $timeTask->getId()));
         }
 
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return $this->render('timetask/edit.html.twig', array(
+            'timeTask' => $timeTask,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ));
     }
 
     /**
      * Deletes a timeTask entity.
      *
      */
-    public function deleteAction(Request $request, TimeTask $timeTask)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($timeTask);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $data=array("result"=>"missing params");
+        if ($request->get("id")!=null){
             $em = $this->getDoctrine()->getManager();
+            $timeTask= $em->find(TimeTask::class,$request->get("id"));
             $em->remove($timeTask);
             $em->flush();
+            $data=array("result"=>"ok");
         }
-
-        return new JsonResponse("ok");
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -134,7 +130,23 @@ class TimeTaskController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('timetask_delete', array('id' => $timeTask->getId())))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
+    }
+    public function allAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->find(User::class,$request->get("user"));
+        $timetasks = $em->getRepository('EntitiesBundle:TimeTask')->findAll(array("user"=>$user));
+        if($timetasks!=null) {
+            forEach ($timetasks as $one) {
+                $data[] = array("state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "executionTime" => $one->getExecutionTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"actions"=>$one->getActions());
+            }
+        }
+        $response = new Response(json_encode($data));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
     }
 }

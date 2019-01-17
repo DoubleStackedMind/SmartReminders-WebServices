@@ -19,7 +19,7 @@ zone_new:
     methods:  [GET, POST]
 
 zone_edit:
-    path:     /{id}/edit
+    path:     /edit
     defaults: { _controller: "EntitiesBundle:Zone:edit" }
     methods:  [GET, POST]
 

@@ -6,14 +6,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EventType extends AbstractType
+class ZoneType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('startTime')->add('endTime')->add('ReminderETA')->add('title')->add('description')->add('state')->add('dayofweek')->add('user');
+        $builder->add('name')->add('log')->add('lat')->add('radius')->add('user');
     }
     
     /**
@@ -22,7 +22,7 @@ class EventType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'EntitiesBundle\Entity\Event'
+            'data_class' => 'EntitiesBundle\Entity\Zone'
         ));
     }
 
@@ -31,7 +31,7 @@ class EventType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'entitiesbundle_event';
+        return 'entitiesbundle_zone';
     }
 
 

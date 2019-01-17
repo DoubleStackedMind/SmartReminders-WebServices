@@ -14,14 +14,14 @@ class TimeTask extends Task
 {
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="executionTime", type="integer")
+     * @ORM\Column(name="executionTime", type="string")
      */
     private $executionTime;
 
     /**
-     * @return int
+     * @return string
      */
     public function getExecutionTime()
     {
@@ -29,7 +29,7 @@ class TimeTask extends Task
     }
 
     /**
-     * @param int $executionTime
+     * @param string $executionTime
      */
     public function setExecutionTime($executionTime)
     {
