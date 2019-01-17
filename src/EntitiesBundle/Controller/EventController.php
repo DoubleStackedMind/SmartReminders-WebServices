@@ -7,6 +7,7 @@ use EntitiesBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Event controller.
@@ -77,21 +78,20 @@ class EventController extends Controller
      */
     public function editAction(Request $request, Event $event)
     {
-        $deleteForm = $this->createDeleteForm($event);
-        $editForm = $this->createForm('EntitiesBundle\Form\EventType', $event);
+        $data=array("result"=>"missing params");
+
+        $editForm = $this->createForm('EntitiesBundle\Form\TriggerTaskType', $event);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('event_edit', array('id' => $event->getId()));
+            $data=array("result"=>"ok");
         }
 
-        return $this->render('event/edit.html.twig', array(
-            'event' => $event,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -100,18 +100,16 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, Event $event)
     {
+        $form = $this->createDeleteForm($event);
+        $form->handleRequest($request);
 
-        $data=array("result"=>"missing params");
-        if ($request->get("id")!=null){
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $timeTask= $em->find(Event::class,$request->get("id"));
-            $em->remove($timeTask);
+            $em->remove($event);
             $em->flush();
-            $data=array("result"=>"ok");
         }
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+
+        return new JsonResponse("ok");
     }
 
     /**
