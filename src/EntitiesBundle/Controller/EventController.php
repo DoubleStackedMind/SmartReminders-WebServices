@@ -3,8 +3,10 @@
 namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\Event;
+use EntitiesBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Event controller.
@@ -33,22 +35,26 @@ class EventController extends Controller
      */
     public function newAction(Request $request)
     {
-        $event = new Event();
-        $form = $this->createForm('EntitiesBundle\Form\EventType', $event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $data = array("result" => "missing params");
+        if ( $request->get("reminderETA") && $request->get("startTime") != null && $request->get("description") != null && $request->get("state") != null && $request->get("days") != null && $request->get("user") != null && $request->get("title") != null && $request->get("endTime") != null) {
+            $em = $this->getDoctrine()->getManager();
+            $event = new Event();
+            $event->setDayofweek($request->get("days"));
+            $event->setStartTime($request->get("startTime"));
+            $event->setState($request->get("state"));
+            $event->setUser($em->find(User::class, $request->get("user")));
+            $event->setDescription($request->get("description"));
+            $event->setTitle($request->get("title"));
+            $event->setEndTime($request->get("endTime"));
+            $event->setReminderETA($request->get("reminderETA"));
             $em = $this->getDoctrine()->getManager();
             $em->persist($event);
             $em->flush();
-
-            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            $data = array("result" => "ok");
         }
-
-        return $this->render('event/new.html.twig', array(
-            'event' => $event,
-            'form' => $form->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -94,16 +100,18 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, Event $event)
     {
-        $form = $this->createDeleteForm($event);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $data=array("result"=>"missing params");
+        if ($request->get("id")!=null){
             $em = $this->getDoctrine()->getManager();
-            $em->remove($event);
+            $timeTask= $em->find(Event::class,$request->get("id"));
+            $em->remove($timeTask);
             $em->flush();
+            $data=array("result"=>"ok");
         }
-
-        return $this->redirectToRoute('event_index');
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -120,5 +128,32 @@ class EventController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    public function allAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->find(User::class,$request->get("user"));
+        $event = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
+        if($event!=null) {
+            forEach ($event as $one) {
+                $data[] = array(
+                    "state"=>$one->getState(),
+                    "title"=>$one->getTitle(),
+                    "id" => $one->getId(),
+                    "startTime" => $one->getStartTime(),
+                    "description" => $one->getDescription(),
+                    "days" => $one->getDayofweek(),
+                    "user"=>$one->getUser(),
+                    "endTime"=>$one->getEndTime(),
+                    "reminderETA"=>$one->getReminderETA());
+            }
+        }
+        $response = new Response(json_encode($data));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
     }
 }
