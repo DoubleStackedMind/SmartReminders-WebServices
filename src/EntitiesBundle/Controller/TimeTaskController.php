@@ -76,27 +76,29 @@ class TimeTaskController extends Controller
         ));
     }
 
-    /**
-     * Displays a form to edit an existing timeTask entity.
-     *
-     */
-    public function editAction(Request $request, TimeTask $timeTask)
+
+    public function editAction(Request $request)
     {
-        $deleteForm = $this->createDeleteForm($timeTask);
-        $editForm = $this->createForm('EntitiesBundle\Form\TimeTaskType', $timeTask);
-        $editForm->handleRequest($request);
+        $data = array("result" => "missing params");
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('timetask_edit', array('id' => $timeTask->getId()));
+        if ($request->get("id")!=null&&$request->get("executionTime") != null && $request->get("description") != null && $request->get("state") != null && $request->get("days") != null && $request->get("user") != null && $request->get("title") != null && $request->get("actions") != null) {
+            $em = $this->getDoctrine()->getManager();
+            $timetask= $em->find(TimeTask::class,$request->get("id"));
+            $timetask->setDayofweek($request->get("days"));
+            $timetask->setExecutionTime($request->get("executionTime"));
+            $timetask->setState($request->get("state"));
+            $timetask->setUser($em->find(User::class, $request->get("user")));
+            $timetask->setDescription($request->get("description"));
+            $timetask->setTitle($request->get("title"));
+            $timetask->setActions($request->get("actions"));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($timetask);
+            $em->flush();
+            $data = array("result" => "ok");
         }
-
-        return $this->render('timetask/edit.html.twig', array(
-            'timeTask' => $timeTask,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**

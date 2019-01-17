@@ -14,7 +14,7 @@ timetask_new:
     methods:  [GET, POST]
 
 timetask_edit:
-    path:     /{id}/edit
+    path:     /edit
     defaults: { _controller: "EntitiesBundle:TimeTask:edit" }
     methods:  [GET, POST]
 timetask_all:
