@@ -4,9 +4,7 @@ namespace EntitiesBundle\Controller;
 
 use EntitiesBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Event controller.
@@ -18,27 +16,15 @@ class EventController extends Controller
      * Lists all event entities.
      *
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        $params=array();
-        $one=null;
-        if($request->query->has('startTime'))
-            $params["startTime"]=$request->get("startTime");
-        if($request->query->has('endTime'))
-            $params["endTime"]=$request->get("endTime");
-        if(count($params)!=0) {
-            $em = $this->getDoctrine()->getManager();
-            $one = $em->getRepository('EntitiesBundle:Event')->findOneBy($params);
-        }
-        $data = array();
-        if($one!=null) {
-            $data[] = array("startTime" => $one->getStartTime(), "endTime" => $one->getEndTime());
-        }
-        $response = new Response(json_encode($data));
+        $em = $this->getDoctrine()->getManager();
 
-        $response->headers->set('Content-Type', 'application/json');
+        $events = $em->getRepository('EntitiesBundle:Event')->findAll();
 
-        return $response;
+        return $this->render('event/index.html.twig', array(
+            'events' => $events,
+        ));
     }
 
     /**
@@ -47,7 +33,6 @@ class EventController extends Controller
      */
     public function newAction(Request $request)
     {
-        $data=array("result"=>"missing params");
         $event = new Event();
         $form = $this->createForm('EntitiesBundle\Form\EventType', $event);
         $form->handleRequest($request);
@@ -57,12 +42,13 @@ class EventController extends Controller
             $em->persist($event);
             $em->flush();
 
-            $data=array("result"=>"ok");
+            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
         }
 
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return $this->render('event/new.html.twig', array(
+            'event' => $event,
+            'form' => $form->createView(),
+        ));
     }
 
     /**
@@ -85,7 +71,6 @@ class EventController extends Controller
      */
     public function editAction(Request $request, Event $event)
     {
-        $data=array("result"=>"missing params");
         $deleteForm = $this->createDeleteForm($event);
         $editForm = $this->createForm('EntitiesBundle\Form\EventType', $event);
         $editForm->handleRequest($request);
@@ -93,12 +78,14 @@ class EventController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            $data=array("result"=>"ok");
+            return $this->redirectToRoute('event_edit', array('id' => $event->getId()));
         }
 
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return $this->render('event/edit.html.twig', array(
+            'event' => $event,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        ));
     }
 
     /**
@@ -116,7 +103,7 @@ class EventController extends Controller
             $em->flush();
         }
 
-        return new JsonResponse("ok");
+        return $this->redirectToRoute('event_index');
     }
 
     /**

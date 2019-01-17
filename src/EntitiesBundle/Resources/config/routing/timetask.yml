@@ -17,8 +17,12 @@ timetask_edit:
     path:     /{id}/edit
     defaults: { _controller: "EntitiesBundle:TimeTask:edit" }
     methods:  [GET, POST]
+timetask_all:
+    path:     /all
+    defaults: { _controller: "EntitiesBundle:TimeTask:all" }
+    methods:  GET
 
 timetask_delete:
-    path:     /{id}/delete
+    path:     /delete
     defaults: { _controller: "EntitiesBundle:TimeTask:delete" }
-    methods:  DELETE
+    methods:  [POST]

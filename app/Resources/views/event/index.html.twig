@@ -8,6 +8,7 @@
             <tr>
                 <th>Starttime</th>
                 <th>Endtime</th>
+                <th>Remindereta</th>
                 <th>Id</th>
                 <th>Title</th>
                 <th>Description</th>
@@ -21,6 +22,7 @@
             <tr>
                 <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.startTime }}</a></td>
                 <td>{{ event.endTime }}</td>
+                <td>{{ event.ReminderETA }}</td>
                 <td>{{ event.id }}</td>
                 <td>{{ event.title }}</td>
                 <td>{{ event.description }}</td>

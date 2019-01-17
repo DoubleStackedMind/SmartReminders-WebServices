@@ -81,23 +81,27 @@ class ZoneController extends Controller
      * Displays a form to edit an existing zone entity.
      *
      */
-    public function editAction(Request $request, Zone $zone)
+    public function editAction(Request $request)
     {
-        $deleteForm = $this->createDeleteForm($zone);
-        $editForm = $this->createForm('EntitiesBundle\Form\ZoneType', $zone);
-        $editForm->handleRequest($request);
+        $data=array("result"=>"missing params");
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('zone_edit', array('id' => $zone->getId()));
+        if($request->get("id")!=null&&$request->get("lng")!=null&&$request->get("lat")!=null&&$request->get("radius")!=null&&$request->get("name")!=null&&$request->get("user")!=null)
+        {
+            $em = $this->getDoctrine()->getManager();
+            $zone = $em->find(Zone::class,$request->get("id"));
+            $zone->setLat($request->get("lat"));
+            $zone->setLog($request->get("lng"));
+            $zone->setName($request->get("name"));
+            $zone->setRadius($request->get("radius"));
+            $zone->setUser($em->find(User::class,$request->get("user")));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($zone);
+            $em->flush();
+            $data=array("result"=>"ok");
         }
-
-        return $this->render('zone/edit.html.twig', array(
-            'zone' => $zone,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
