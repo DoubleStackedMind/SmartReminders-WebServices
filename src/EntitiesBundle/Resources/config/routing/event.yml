@@ -19,9 +19,9 @@ event_edit:
     methods:  [GET, POST]
 
 event_delete:
-    path:     /{id}/delete
+    path:     /delete
     defaults: { _controller: "EntitiesBundle:Event:delete" }
-    methods:  DELETE
+    methods:  [POST]
 
 event_all:
     path:       /all
