@@ -14,9 +14,9 @@ class Event extends Plan
 {
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="startTime", type="integer")
+     * @ORM\Column(name="startTime", type="string")
      */
     private $startTime;
     /**
@@ -27,9 +27,9 @@ class Event extends Plan
     private $endTime;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="reminderETA", type="string")
+     * @ORM\Column(name="reminderETA", type="integer")
      */
     private $ReminderETA;
 
