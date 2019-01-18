@@ -16,20 +16,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class EventController extends Controller
 {
     /**
-     * Lists all event entities.
+     * Lists all events entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $em->find(User::class,$request->get("user"));
+        $events = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
+        if($events!=null) {
+            forEach ($events as $one) {
+                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"endTime"=>$one->getEndTime());
+            }
+        }
+        $response = new Response(json_encode($data));
 
-        $events = $em->getRepository('EntitiesBundle:Event')->findAll();
+        $response->headers->set('Content-Type', 'application/json');
 
-        return $this->render('event/index.html.twig', array(
-            'events' => $events,
-        ));
+        return $response;
     }
-
     /**
      * Creates a new event entity.
      *
@@ -98,18 +103,19 @@ class EventController extends Controller
      * Deletes a event entity.
      *
      */
-    public function deleteAction(Request $request, Event $event)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $data=array("result"=>"missing params");
+        if ($request->get("id")!=null){
             $em = $this->getDoctrine()->getManager();
-            $em->remove($event);
+            $timeTask= $em->find(Event::class,$request->get("id"));
+            $em->remove($timeTask);
             $em->flush();
+            $data=array("result"=>"ok");
         }
-
-        return new JsonResponse("ok");
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -132,19 +138,10 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->find(User::class,$request->get("user"));
-        $event = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
-        if($event!=null) {
-            forEach ($event as $one) {
-                $data[] = array(
-                    "state"=>$one->getState(),
-                    "title"=>$one->getTitle(),
-                    "id" => $one->getId(),
-                    "startTime" => $one->getStartTime(),
-                    "description" => $one->getDescription(),
-                    "days" => $one->getDayofweek(),
-                    "user"=>$one->getUser(),
-                    "endTime"=>$one->getEndTime(),
-                    "reminderETA"=>$one->getReminderETA());
+        $events = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
+        if($events!=null) {
+            forEach ($events as $one) {
+                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"endTime"=>$one->getEndTime());
             }
         }
         $response = new Response(json_encode($data));

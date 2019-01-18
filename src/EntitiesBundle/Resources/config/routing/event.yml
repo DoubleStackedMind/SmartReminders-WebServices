@@ -22,3 +22,8 @@ event_delete:
     path:     /{id}/delete
     defaults: { _controller: "EntitiesBundle:Event:delete" }
     methods:  DELETE
+
+event_all:
+    path:       /all
+    defaults:   {  _controller: "EntitiesBundle:Event:all"}
+    methods:    GET
