@@ -85,7 +85,7 @@ class EventController extends Controller
     {
         $data=array("result"=>"missing params");
 
-        $editForm = $this->createForm('EntitiesBundle\Form\TriggerTaskType', $event);
+        $editForm = $this->createForm('EntitiesBundle\Form\EventType', $event);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
