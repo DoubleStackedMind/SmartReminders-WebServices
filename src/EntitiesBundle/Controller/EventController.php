@@ -26,7 +26,7 @@ class EventController extends Controller
         $events = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
         if($events!=null) {
             forEach ($events as $one) {
-                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"endTime"=>$one->getEndTime());
+                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser()->getId(),"endTime"=>$one->getEndTime());
             }
         }
         $response = new Response(json_encode($data));
@@ -48,7 +48,7 @@ class EventController extends Controller
             $event->setDayofweek($request->get("days"));
             $event->setStartTime($request->get("startTime"));
             $event->setState($request->get("state"));
-            $event->setUser($em->find(User::class, $request->get("user")));
+            $event->setUser($em->find(User::class, $request->get("user"))->getId());
             $event->setDescription($request->get("description"));
             $event->setTitle($request->get("title"));
             $event->setEndTime($request->get("endTime"));
@@ -141,7 +141,7 @@ class EventController extends Controller
         $events = $em->getRepository('EntitiesBundle:Event')->findAll(array("user"=>$user));
         if($events!=null) {
             forEach ($events as $one) {
-                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser(),"endTime"=>$one->getEndTime());
+                $data[] = array("reminderETA"=>$one->getReminderETA(),"state"=>$one->getState(),"title"=>$one->getTitle(),"id" => $one->getId(), "startTime" => $one->getStartTime(), "description" => $one->getDescription(), "days" => $one->getDayofweek(),"user"=>$one->getUser()->getId(),"endTime"=>$one->getEndTime());
             }
         }
         $response = new Response(json_encode($data));
