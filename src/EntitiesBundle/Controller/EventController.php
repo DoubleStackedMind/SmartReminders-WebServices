@@ -82,19 +82,26 @@ class EventController extends Controller
      * Displays a form to edit an existing event entity.
      *
      */
-    public function editAction(Request $request, Event $event)
+    public function editAction(Request $request)
     {
-        $data=array("result"=>"missing params");
+        $data = array("result" => "missing params");
 
-        $editForm = $this->createForm('EntitiesBundle\Form\EventType', $event);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $data=array("result"=>"ok");
+        if ($request->get("id")!=null&&$request->get("days") != null && $request->get("startTime") != null && $request->get("state") != null && $request->get("description") != null && $request->get("user") != null && $request->get("title") != null && $request->get("endTime") != null && $request->get('reminderETA') != null) {
+            $em = $this->getDoctrine()->getManager();
+            $event = new Event();
+            $event->setDayofweek($request->get("days"));
+            $event->setStartTime($request->get("startTime"));
+            $event->setState($request->get("state"));
+            $event->setUser($em->find(User::class, $request->get("user")));
+            $event->setDescription($request->get("description"));
+            $event->setTitle($request->get("title"));
+            $event->setEndTime($request->get("endTime"));
+            $event->setReminderETA($request->get("reminderETA"));
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($event);
+            $em->flush();
+            $data = array("result" => "ok");
         }
-
         $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
