@@ -20,16 +20,16 @@ class Event extends Plan
      */
     private $startTime;
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="endTime", type="integer")
+     * @ORM\Column(name="endTime", type="string")
      */
     private $endTime;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="reminderETA", type="integer")
+     * @ORM\Column(name="reminderETA", type="string")
      */
     private $ReminderETA;
 
@@ -42,7 +42,7 @@ class Event extends Plan
     }
 
     /**
-     * @param int $startTime
+     * @param string $startTime
      */
     public function setStartTime($startTime)
     {
@@ -50,7 +50,7 @@ class Event extends Plan
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getEndTime()
     {
@@ -58,7 +58,7 @@ class Event extends Plan
     }
 
     /**
-     * @param int $endTime
+     * @param int string
      */
     public function setEndTime($endTime)
     {
