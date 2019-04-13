@@ -88,7 +88,7 @@ class EventController extends Controller
 
         if ($request->get("id")!=null&&$request->get("days") != null && $request->get("startTime") != null && $request->get("state") != null && $request->get("description") != null && $request->get("user") != null && $request->get("title") != null && $request->get("endTime") != null && $request->get('reminderETA') != null) {
             $em = $this->getDoctrine()->getManager();
-            $event = new Event();
+            $event = $em->find(Event::class,$request->get("id"));
             $event->setDayofweek($request->get("days"));
             $event->setStartTime($request->get("startTime"));
             $event->setState($request->get("state"));
